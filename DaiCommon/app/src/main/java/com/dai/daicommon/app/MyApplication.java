@@ -10,6 +10,9 @@ import com.squareup.leakcanary.LeakCanary;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.weavey.loading.lib.LoadingLayout;
 
+/**
+ * 始建于2018年8月2日
+ */
 public class MyApplication extends Application{
     @Override
     public void onCreate() {
