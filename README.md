@@ -1,5 +1,5 @@
 # androidAll
-retrofit2 框架MVP＜/br＞
+retrofit2 框架MVP</br>
 RxJava＜/br＞
 图片加载glide＜/br＞
 loadinglayout通用加载成功或失败提示＜/br＞
