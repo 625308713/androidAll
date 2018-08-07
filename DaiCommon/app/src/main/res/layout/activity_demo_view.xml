@@ -45,7 +45,22 @@
                 android:text="4G"
                 android:id="@+id/btn_mobile"/>
         </LinearLayout>
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="ADDHEAD"
+            android:id="@+id/btn_add_head"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="ADDFOOTER"
+            android:id="@+id/btn_add_footer"/>
+    </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_recycler"
         android:layout_width="match_parent"
