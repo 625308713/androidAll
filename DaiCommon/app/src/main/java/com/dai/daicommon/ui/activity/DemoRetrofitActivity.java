@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -43,7 +44,7 @@ import java.util.List;
 /**
  * 网络请求
  */
-public class DemoRetrofitActivity extends Activity implements View.OnClickListener{
+public class DemoRetrofitActivity extends Activity implements View.OnClickListener,SwipeRefreshLayout.OnRefreshListener {
     private Context context;
     private BookPresenter mBookPresenter = new BookPresenter();
     private LoadingLayout loadingLayout;
@@ -63,6 +64,10 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
     private int requestCount = 10;
     //首次请求
     private boolean isFirst = true;
+    //下拉刷新
+    private SwipeRefreshLayout mRefreshLayout;
+    //加载更多监听
+    private BaseQuickAdapter.RequestLoadMoreListener requestMoreListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,6 +77,8 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
         context = this;
         mBookPresenter.onCreate();
         mBookPresenter.attachView(mBookView);
+        mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.pull_refresh);
+        mRefreshLayout.setOnRefreshListener(this);
         initRecycler();
     }
     //初始化Recycler
@@ -82,7 +89,8 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
         bookAdapter = new BookAdapter(R.layout.adapter_book,childBooks);
         // 没有数据的时候默认显示该布局
         bookAdapter.setEmptyView(View.inflate(context,R.layout.empty_view, null));
-//        my_recycler.setAdapter(bookAdapter);
+       //基础布局
+        my_recycler.setAdapter(bookAdapter);
 
         /******可拖拽适配器********/
         draggableAdapter = new DraggableAdapter(childBooks);
@@ -166,7 +174,7 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
                 datas02.add(new MyMultipleItem(MyMultipleItem.NORMAL_TYPE,new Person("张三","18岁")));
             }
         }
-        my_recycler.setAdapter(new MultipleItemAdapter(datas02));
+//        my_recycler.setAdapter(new MultipleItemAdapter(datas02));
 
         //列表单击
         bookAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
@@ -188,28 +196,23 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
         });
         //添加加载list动画
         bookAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
-        bookAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+        requestMoreListener = new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override public void onLoadMoreRequested() {
                 my_recycler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (mCurrentCounter >= totalCount) {
-                            //数据全部加载完毕
-                            bookAdapter.loadMoreEnd();
-                        } else {
-                            //成功获取更多数据
-                            mBookPresenter.getSearchBooks("西游记", null, requestCount, 10);
-                            requestCount += 10;
-                        }
+                        //成功获取更多数据
+                        mBookPresenter.getSearchBooks("西游记", null, requestCount, 10);
+                        requestCount += 10;
                     }
                 }, 200);
             }
-        }, my_recycler);
+        };
         //设置是否开启上滑加载更多
         bookAdapter.setEnableLoadMore(true);
         // 当列表滑动到倒数第N个Item的时候(默认是1)回调onLoadMoreRequested方法
 //        bookAdapter.setPreLoadNumber(5);
-        //设置自定义加载布局
+        //设置自定义加载更多布局
         bookAdapter.setLoadMoreView(new CustomLoadMoreView());
     }
 
@@ -247,6 +250,10 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
             case R.id.btn_add_footer:
                 bookAdapter.addFooterView(View.inflate(context, R.layout.footer_view, null));
                 break;
+            //跳转Frament的Demo
+            case R.id.btn_frament:
+                startActivity(new Intent(DemoRetrofitActivity.this, FramentEnterActivity.class));
+                break;
         }
     }
 
@@ -263,12 +270,21 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
             if(isFirst){
                 isFirst = false;
                 childBooks.clear();
+                //首次或刷新后设置加载更多监听，刷新后必须再次设置
+                bookAdapter.setOnLoadMoreListener(requestMoreListener, my_recycler);
             }
+            //请求完成，隐藏下拉刷新UI
+            mRefreshLayout.setRefreshing(false);
             childBooks.addAll(mBook.getBooks());
             mCurrentCounter = bookAdapter.getData().size();
-            bookAdapter.loadMoreComplete();
             bookAdapter.notifyDataSetChanged();
             draggableAdapter.notifyDataSetChanged();
+            if (mCurrentCounter >= totalCount) {
+                //数据全部加载完毕
+                bookAdapter.loadMoreEnd();
+            }else{
+                bookAdapter.loadMoreComplete();
+            }
 //            sectionAdapter.notifyDataSetChanged();
 //            loadingLayout.setStatus(LoadingLayout.Empty);//无数据
 //            loadingLayout.setStatus(LoadingLayout.No_Network);//无网络
@@ -282,6 +298,13 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
             loadingLayout.setStatus(LoadingLayout.Error);//错误
         }
     };
+
+    @Override
+    public void onRefresh() {
+        //下拉刷新
+        isFirst = true;
+        mBookPresenter.getSearchBooks("西游记", null, 0, 10);
+    }
 
     //自定义上滑加载更多布局
     public final class CustomLoadMoreView extends LoadMoreView {

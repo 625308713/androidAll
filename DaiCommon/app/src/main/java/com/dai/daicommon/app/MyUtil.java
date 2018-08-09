@@ -11,7 +11,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MyUtil {
-    public static void showLog(Context context,String s){
+    public static void showToast(Context context,String s){
         Toast.makeText(context,s,Toast.LENGTH_LONG).show();
     }
 
