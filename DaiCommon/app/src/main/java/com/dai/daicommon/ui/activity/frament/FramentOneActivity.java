@@ -1,6 +1,5 @@
-package com.dai.daicommon.ui.activity;
+package com.dai.daicommon.ui.activity.frament;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

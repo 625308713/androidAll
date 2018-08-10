@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,10 +11,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -25,17 +21,17 @@ import com.chad.library.adapter.base.listener.OnItemDragListener;
 import com.chad.library.adapter.base.listener.OnItemSwipeListener;
 import com.chad.library.adapter.base.loadmore.LoadMoreView;
 import com.dai.daicommon.R;
-import com.dai.daicommon.app.MyUtil;
 import com.dai.daicommon.service.bean.Book;
 import com.dai.daicommon.service.bean.GroupBook;
 import com.dai.daicommon.service.bean.MyMultipleItem;
 import com.dai.daicommon.service.bean.Person;
 import com.dai.daicommon.service.presenter.BookPresenter;
 import com.dai.daicommon.service.view.BookView;
+import com.dai.daicommon.ui.activity.camera.CustomerCameraActivity;
+import com.dai.daicommon.ui.activity.frament.FramentEnterActivity;
 import com.dai.daicommon.ui.adapter.BookAdapter;
 import com.dai.daicommon.ui.adapter.BookSectionAdapter;
 import com.dai.daicommon.ui.adapter.DraggableAdapter;
-import com.dai.daicommon.ui.adapter.MultipleItemAdapter;
 import com.weavey.loading.lib.LoadingLayout;
 
 import java.util.ArrayList;
@@ -253,6 +249,10 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
             //跳转Frament的Demo
             case R.id.btn_frament:
                 startActivity(new Intent(DemoRetrofitActivity.this, FramentEnterActivity.class));
+                break;
+            //拍照,图片选择
+            case R.id.btn_camera:
+                startActivity(new Intent(DemoRetrofitActivity.this, CustomerCameraActivity.class));
                 break;
         }
     }
