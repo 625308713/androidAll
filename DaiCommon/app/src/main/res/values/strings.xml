@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">DaiCommon</string>
+    <string name="updatecontent">1.VersionCheckLib V2版震撼来袭\n2.链式编程，调用简单\n3.强大的自定义功能，一行代码轻松搞定\n4.欢迎Star和Issue\n5.github:<a href='http://github.com/alexliusheng'>http://github.com/alexliusheng</a></string>
+    <string name="custom_content_text">自定义通知栏进度:%d%%/100%%</string>
+    <string name="update_title">VersionCheckLib V2版震撼来袭</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -175,4 +178,5 @@
         <item>Menu13</item>
         <item>Menu14</item>
     </string-array>
+
 </resources>

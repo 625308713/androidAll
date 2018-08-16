@@ -29,6 +29,7 @@ import com.dai.daicommon.service.presenter.BookPresenter;
 import com.dai.daicommon.service.view.BookView;
 import com.dai.daicommon.ui.activity.camera.CustomerCameraActivity;
 import com.dai.daicommon.ui.activity.frament.FramentEnterActivity;
+import com.dai.daicommon.ui.activity.version.V2Activity;
 import com.dai.daicommon.ui.adapter.BookAdapter;
 import com.dai.daicommon.ui.adapter.BookSectionAdapter;
 import com.dai.daicommon.ui.adapter.DraggableAdapter;
@@ -253,6 +254,10 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
             //拍照,图片选择
             case R.id.btn_camera:
                 startActivity(new Intent(DemoRetrofitActivity.this, CustomerCameraActivity.class));
+                break;
+            //版本更新 CheckVersionLib
+            case R.id.btn_update_version:
+                startActivity(new Intent(DemoRetrofitActivity.this, V2Activity.class));
                 break;
         }
     }

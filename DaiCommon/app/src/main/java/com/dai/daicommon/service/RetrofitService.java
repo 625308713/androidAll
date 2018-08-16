@@ -1,6 +1,7 @@
 package com.dai.daicommon.service;
 
 import com.dai.daicommon.service.bean.Book;
+import com.dai.daicommon.service.bean.VersionBean;
 
 import java.util.Map;
 
@@ -13,6 +14,10 @@ import retrofit2.http.QueryMap;
 import rx.Observable;
 
 public interface RetrofitService {
+    //请求版本信息
+    @GET("jsonapi/update_test.json")
+    Observable<VersionBean> getVersionInfo();
+
     //已确定入参名称
     @GET("book/search")
     Observable<Book> getSearchBook(@Query("q") String name,

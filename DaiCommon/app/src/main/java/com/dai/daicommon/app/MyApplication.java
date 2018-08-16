@@ -43,4 +43,5 @@ public class MyApplication extends Application{
                 .setReloadButtonTextColor(R.color.colorAccent)
                 .setReloadButtonWidthAndHeight(150,40);
     }
+
 }

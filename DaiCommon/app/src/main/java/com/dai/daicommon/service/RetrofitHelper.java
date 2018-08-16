@@ -33,7 +33,7 @@ public class RetrofitHelper {
 
     private void resetApp() {
         mRetrofit = new Retrofit.Builder()
-                .baseUrl(API.baseUrl)
+                .baseUrl(API.baseUrl2)
                 .client(client)
                 .addConverterFactory(factory)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

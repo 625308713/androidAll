@@ -7,5 +7,7 @@
 
     <color name="tab_unselect">#c9c9c9</color>
     <color name="bg_btn">#dadada</color>
-
+    <color name="fooyo_tint_red">#ef5d6a</color>
+    <color name="fooyo_mid_green">#50b848</color>
+    <color name="fooyo_azure">#00aeef</color>
 </resources>
