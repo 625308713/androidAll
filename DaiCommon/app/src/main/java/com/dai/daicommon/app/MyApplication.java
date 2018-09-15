@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 
+import com.blankj.utilcode.util.Utils;
 import com.dai.daicommon.R;
 import com.dai.daicommon.broadService.StartServiceReceiver;
 import com.squareup.leakcanary.LeakCanary;
@@ -42,6 +43,9 @@ public class MyApplication extends Application{
                 .setReloadButtonTextSize(14)
                 .setReloadButtonTextColor(R.color.colorAccent)
                 .setReloadButtonWidthAndHeight(150,40);
+
+        //初始化工具大全
+        Utils.init(this);
     }
 
 }

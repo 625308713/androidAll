@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.dai.daicommon.R;
 
+import gorden.rxbus2.RxBus;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -26,6 +27,9 @@ public class DemoRxAndroidActivity extends Activity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo_rxandroid);
+        //注册RxBus
+        RxBus.get().register(this);
+        RxBus.get().send(888,"121212aaaaaavvvvv");
         //被观察者
         Observable.create(new ObservableOnSubscribe<String>() {
             @Override
@@ -72,5 +76,12 @@ public class DemoRxAndroidActivity extends Activity{
                     Log.e(TAG,"onNext:"+value);
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //解除绑定RxBus
+        RxBus.get().unRegister(this);
     }
 }

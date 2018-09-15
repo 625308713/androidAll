@@ -61,7 +61,6 @@ public class StartServiceReceiver extends BroadcastReceiver {
                 if(checkNetworkStatus(networkInfo)){
                     //可用
                     //todo
-
                 }
             }
             //具体连接状态判断

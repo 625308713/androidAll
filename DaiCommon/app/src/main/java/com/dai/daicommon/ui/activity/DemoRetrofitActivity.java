@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.TimeUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.callback.ItemDragAndSwipeCallback;
 import com.chad.library.adapter.base.listener.OnItemDragListener;
@@ -38,10 +40,15 @@ import com.weavey.loading.lib.LoadingLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import gorden.rxbus2.RxBus;
+import gorden.rxbus2.Subscribe;
+import gorden.rxbus2.ThreadMode;
+
 /**
  * 网络请求
  */
 public class DemoRetrofitActivity extends Activity implements View.OnClickListener,SwipeRefreshLayout.OnRefreshListener {
+    private String TAG = getClass().getSimpleName();
     private Context context;
     private BookPresenter mBookPresenter = new BookPresenter();
     private LoadingLayout loadingLayout;
@@ -70,6 +77,7 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo_view);
+        RxBus.get().register(this);
         loadingLayout = (LoadingLayout) findViewById(R.id.loading_layout);
         context = this;
         mBookPresenter.onCreate();
@@ -266,6 +274,8 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
     protected void onDestroy(){
         super.onDestroy();
         mBookPresenter.onStop();
+        //解除绑定RxBus
+        RxBus.get().unRegister(this);
     }
 
     private BookView mBookView = new BookView() {
@@ -342,4 +352,11 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
             return 0;
         }
     }
+
+    //接收RxBus消息
+    @Subscribe(code = 888)
+    public void receive1005(String s){
+        Log.i(TAG,s);
+    }
+
 }
