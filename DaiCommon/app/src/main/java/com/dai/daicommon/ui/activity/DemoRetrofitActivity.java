@@ -1,12 +1,15 @@
 package com.dai.daicommon.ui.activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,12 +26,15 @@ import com.chad.library.adapter.base.listener.OnItemDragListener;
 import com.chad.library.adapter.base.listener.OnItemSwipeListener;
 import com.chad.library.adapter.base.loadmore.LoadMoreView;
 import com.dai.daicommon.R;
+import com.dai.daicommon.intentService.MyIntentService;
 import com.dai.daicommon.service.bean.Book;
 import com.dai.daicommon.service.bean.GroupBook;
 import com.dai.daicommon.service.bean.MyMultipleItem;
 import com.dai.daicommon.service.bean.Person;
 import com.dai.daicommon.service.presenter.BookPresenter;
+import com.dai.daicommon.service.presenter.PersonPresenter;
 import com.dai.daicommon.service.view.BookView;
+import com.dai.daicommon.service.view.PersonView;
 import com.dai.daicommon.ui.activity.camera.CustomerCameraActivity;
 import com.dai.daicommon.ui.activity.frament.FramentEnterActivity;
 import com.dai.daicommon.ui.activity.version.V2Activity;
@@ -38,7 +44,9 @@ import com.dai.daicommon.ui.adapter.DraggableAdapter;
 import com.weavey.loading.lib.LoadingLayout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import gorden.rxbus2.RxBus;
 import gorden.rxbus2.Subscribe;
@@ -49,8 +57,10 @@ import gorden.rxbus2.ThreadMode;
  */
 public class DemoRetrofitActivity extends Activity implements View.OnClickListener,SwipeRefreshLayout.OnRefreshListener {
     private String TAG = getClass().getSimpleName();
+    private int i;
     private Context context;
     private BookPresenter mBookPresenter = new BookPresenter();
+    private PersonPresenter personPresenter = new PersonPresenter();
     private LoadingLayout loadingLayout;
     private RecyclerView my_recycler;
     //基本布局适配器
@@ -72,6 +82,18 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
     private SwipeRefreshLayout mRefreshLayout;
     //加载更多监听
     private BaseQuickAdapter.RequestLoadMoreListener requestMoreListener;
+    //只在应用内部接收的广播
+    private LocalBroadcastManager mLocalBroadcastManager;
+    //接收IntentService发送的广播
+    private BroadcastReceiver uploadImgReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction() == "receivePhotoAction") {
+                String path = intent.getStringExtra("complete");
+                Log.i("dai","上传成功："+path);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,9 +104,17 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
         context = this;
         mBookPresenter.onCreate();
         mBookPresenter.attachView(mBookView);
+        personPresenter.onCreate();
+        personPresenter.attachView(personView);
         mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.pull_refresh);
         mRefreshLayout.setOnRefreshListener(this);
         initRecycler();
+
+        //初始化LocalBroadcastManager广播接收
+        IntentFilter  filter = new IntentFilter();
+        filter.addAction("receivePhotoAction");
+        mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);//获得实例
+        mLocalBroadcastManager.registerReceiver(uploadImgReceiver, filter);//注册监听
     }
     //初始化Recycler
     public void initRecycler(){
@@ -267,6 +297,21 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
             case R.id.btn_update_version:
                 startActivity(new Intent(DemoRetrofitActivity.this, V2Activity.class));
                 break;
+            //测试自己的服务
+            case R.id.btn_spring_boot:
+                Map<String,String> map = new HashMap();
+                map.put("name","代金个");
+                map.put("age","122199");
+                personPresenter.testMethod(map);
+                break;
+                //IntentServicec测试
+            case R.id.btn_intent_service:
+                String path = "/sdcard/imgs/" + (++i) + ".png";
+                Intent intent = new Intent(context, MyIntentService.class);
+                intent.setAction("uploadPhotoAction");
+                intent.putExtra("path",path);
+                startService(intent);
+                break;
         }
     }
 
@@ -276,6 +321,8 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
         mBookPresenter.onStop();
         //解除绑定RxBus
         RxBus.get().unRegister(this);
+        //取消监听
+        mLocalBroadcastManager.unregisterReceiver(uploadImgReceiver);
     }
 
     private BookView mBookView = new BookView() {
@@ -311,6 +358,18 @@ public class DemoRetrofitActivity extends Activity implements View.OnClickListen
             //获取更多数据失败
             bookAdapter.loadMoreFail();
             loadingLayout.setStatus(LoadingLayout.Error);//错误
+        }
+    };
+
+    private PersonView personView = new PersonView() {
+        @Override
+        public void onSuccess(Person s) {
+            ToastUtils.showLong(s.getName()+".."+s.getAge());
+        }
+
+        @Override
+        public void onError(String result) {
+            ToastUtils.showLong(result+"..");
         }
     };
 

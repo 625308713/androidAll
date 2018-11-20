@@ -5,7 +5,10 @@ import android.content.Context;
 import com.dai.daicommon.service.RetrofitHelper;
 import com.dai.daicommon.service.RetrofitService;
 import com.dai.daicommon.service.bean.Book;
+import com.dai.daicommon.service.bean.Person;
 import com.dai.daicommon.service.bean.VersionBean;
+
+import java.util.Map;
 
 import rx.Observable;
 
@@ -21,6 +24,10 @@ public class DataManager {
     public Observable<Book> getSearchBooks(String name, String tag, int start, int count){
         return mRetrofitService.getSearchBook(name,tag,start,count);
     }
+    public Observable<Person> testMethod(Map<String, String> map){
+        return mRetrofitService.testMethod(map);
+    }
+
     public Observable<VersionBean> getVersionInfo(){
         return mRetrofitService.getVersionInfo();
     }

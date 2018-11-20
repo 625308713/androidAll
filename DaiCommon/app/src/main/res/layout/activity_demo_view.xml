@@ -84,6 +84,18 @@
             android:onClick="onClick"
             android:text="UPDATE_VERSION"
             android:id="@+id/btn_update_version"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="spring_boot"
+            android:id="@+id/btn_spring_boot"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="intentService"
+            android:id="@+id/btn_intent_service"/>
     </LinearLayout>
         <android.support.v4.widget.SwipeRefreshLayout
             android:layout_width="match_parent"

@@ -1,8 +1,10 @@
 package com.dai.daicommon.service;
 
 import com.dai.daicommon.service.bean.Book;
+import com.dai.daicommon.service.bean.Person;
 import com.dai.daicommon.service.bean.VersionBean;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.http.Body;
@@ -36,5 +38,6 @@ public interface RetrofitService {
     @POST("users/new")
     Observable<Book> createBook(@Body Book book);
 
-
+    @POST("main/login")
+    Observable<Person> testMethod(@Body Map<String, String> map);
 }
